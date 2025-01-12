@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "module": "NodeNext",
+    "esModuleInterop": true,
+    "moduleResolution": "nodenext",
+    "noImplicitReturns": true,
+    "noUnusedLocals": true,
+    "outDir": "lib",
+    "sourceMap": true,
+    "strict": true,
+    "target": "es2017"
+  },
+  "paths": {
+    // @によってプロジェクトルートをこのディレクトリに定義している
+    "@/*": ["./*"]
+  },
+  "compileOnSave": true,
+  "include": ["src", ".eslintrc.js"]
+}

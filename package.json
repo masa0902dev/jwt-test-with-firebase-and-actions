@@ -1,0 +1,25 @@
+{
+  "name": "jwt-test-with-firebase-and-actions",
+  "version": "1.0.0",
+  "description": "jwt test with Firebase (Functions, Firestore, Hosting) and Github Actions.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/masa0902dev/jwt-test-with-firebase-and-actions.git"
+  },
+  "author": "masa0902dev",
+  "bugs": {
+    "url": "https://github.com/masa0902dev/jwt-test-with-firebase-and-actions/issues"
+  },
+  "homepage": "https://github.com/masa0902dev/jwt-test-with-firebase-and-actions#readme",
+  "dependencies": {
+    "firebase": "^11.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.5",
+    "typescript": "^5.7.3"
+  }
+}
