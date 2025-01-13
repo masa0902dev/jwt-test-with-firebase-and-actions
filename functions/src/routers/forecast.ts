@@ -1,13 +1,23 @@
 import express, { Request, Response } from "express";
+import getFromFirestore from "../utils/getFromFirestore";
+import { DataFromApi, DataType } from "../types";
+import saveToFirestore from "../utils/saveToFirestore";
 
+const dataType: DataType = "forecast";
 const router = express.Router();
 
 router.route("/").get(async (req: Request, res: Response) => {
-  res.send("Hello from forecast! GET");
+  const data: DataFromApi = await getFromFirestore(dataType);
+  res.send(data);
 });
 
 router.route("/").post(async (req: Request, res: Response) => {
-  res.send("Hello from forecast! POST");
+  saveToFirestore(dataType, req.body);
+  const sending = {
+    dataType: dataType,
+    data: req.body,
+  };
+  res.send(sending);
 });
 
 export default router;
