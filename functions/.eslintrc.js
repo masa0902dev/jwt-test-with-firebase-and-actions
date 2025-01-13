@@ -14,13 +14,11 @@ module.exports = {
   ],
   parser: "@typescript-eslint/parser",
   parserOptions: {
-    project: ["tsconfig.json"],
+    // これによってfunctions内のエラーは治った
+    project: ["./tsconfig.json"],
     sourceType: "module",
   },
-  ignorePatterns: [
-    "/lib/**/*", // Ignore built files.
-    "/generated/**/*", // Ignore generated files.
-  ],
+  ignorePatterns: ["/lib/**/*", "/generated/**/*"],
   plugins: ["@typescript-eslint", "import"],
   rules: {
     "quotes": ["error", "double"],
@@ -30,5 +28,7 @@ module.exports = {
     "new-cap": ["error", { capIsNew: false }],
     "max-len": ["error", { code: 1000 }],
     "one-var": ["error", { initialized: "never" }],
+    // NOTE: https://runebook.dev/ja/docs/eslint/rules/comma-dangle#:~:text=%E6%9C%AB%E5%B0%BE%E3%81%AB%E3%82%AB%E3%83%B3%E3%83%9E%E3%81%8C%E5%BF%85%E8%A6%81%E3%81%A7%E3%81%99
+    "comma-dangle": ["error", "always-multiline"],
   },
 };
