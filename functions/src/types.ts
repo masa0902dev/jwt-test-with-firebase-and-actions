@@ -1,5 +1,11 @@
 export type DataType = "forecast" | "temperature" | "estimation";
 
+export const isDataType = (target: unknown): target is DataType => {
+  const dataTypes: DataType[] = ["forecast", "temperature", "estimation"];
+  if (typeof target !== "string") return false;
+  return dataTypes.includes(target as DataType);
+};
+
 /* ex:
 dataFromFirestore = {
   dataType: "forecast"
