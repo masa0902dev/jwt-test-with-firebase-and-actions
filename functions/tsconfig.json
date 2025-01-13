@@ -8,12 +8,13 @@
     "outDir": "lib",
     "sourceMap": true,
     "strict": true,
-    "target": "es2017"
+    "target": "es2017",
+    "resolveJsonModule": true
   },
-  "paths": {
-    // @によってプロジェクトルートをこのディレクトリに定義している
-    "@/*": ["./*"]
-  },
+  // "paths": {
+  //   // @によってプロジェクトルートをこのディレクトリに定義している
+  //   "@/*": ["./*"]
+  // },
   "compileOnSave": true,
   "include": ["src", ".eslintrc.js"]
 }
