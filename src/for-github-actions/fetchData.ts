@@ -43,14 +43,14 @@ async function fetchData() {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Auhtorization: `Bearer ${jwtToken}`,
+        Authorization: `Bearer ${jwtToken}`,
       },
       body: JSON.stringify(dataToSend),
     });
     if (!res.ok) {
       throw new Error(`Failed to save data: ${res.statusText}`);
     }
-    console.log("successfully saved to Firestore:", res);
+    console.log("successfully saved to Firestore:", await res.json());
   } catch (error) {
     console.error("Error saving data:", error);
     process.exit(1);
