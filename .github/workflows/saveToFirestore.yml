@@ -1,0 +1,47 @@
+name: save to firestore from functions api
+
+on:
+  workflow_dispatch:
+
+jobs:
+  run-ts-and-call-api:
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      # リポジトリのコードを取得
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Node.js の設定
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      # 必要なパッケージのインストール
+      - name: Install dependencies
+        run: npm install
+
+      # JWTトークンを取得
+      - name: Generate JWT Token
+        id: get-jwt
+        run: |
+          echo "JWT_TOKEN=$(curl -s -H 'Metadata-Flavor: Google' \
+            http://169.254.169.254/computeMetadata/v1/instance/service-accounts/default/identity?audience=https://firestore-fzxwlwc6iq-an.a.run.app/forecast)" \
+            >> $GITHUB_ENV
+
+      # TypeScript ファイルを実行して外部APIを叩き、Firestore APIに送信
+      - name: Run TypeScript File
+        run: |
+          # TypeScript コンパイル
+          npx tsc
+
+          # 実行
+          node dist/fetchData.js
+        # NOTE: 環境変数として値をファイルに渡す。
+        env:
+          JWT_TOKEN: ${{ env.JWT_TOKEN }}
