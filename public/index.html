@@ -131,23 +131,37 @@
   </div>
 
   <script>
-    const baseUrl = 'https://us-central1-jwt-test-3c7b4.cloudfunctions.net/api';
+    const region = "asia-northeast1";
+    // const baseUrl = process.env.NODE_ENV === 'production' ?
+    //   process.env.FUNCTION_API_URL :
+    //   `http://127.0.0.1:5001/jwt-test-with-actions/${region}/firestore`;
+    const baseUrl = `http://127.0.0.1:5001/jwt-test-with-actions/${region}/firestore`
 
     // get weekly forecast
     document.getElementById('forecast').addEventListener('click', async () => {
-      const response = await fetch(baseUrl + "/forecast", {
+      const url = baseUrl + "/forecast";
+      console.log("clicked:", url)
+      const response = await fetch(url, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'
         }
       });
+      if (!response.ok) {
+        const message = `An error has occured: ${response.status}`;
+        console.error(message);
+        document.getElementById('response').innerText = message;
+        return;
+      }
       const data = await response.json();
       document.getElementById('response').innerText = JSON.stringify(data, null, 2);
     });
 
     // get past temperature
     document.getElementById('temperature').addEventListener('click', async () => {
-      const response = await fetch(baseUrl + "/temperature", {
+      const url = baseUrl + "/forecast";
+      console.log("clicked:", url)
+      const response = await fetch(url, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'
