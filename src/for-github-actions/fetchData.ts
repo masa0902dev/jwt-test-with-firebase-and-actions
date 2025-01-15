@@ -1,3 +1,6 @@
+import { config } from "dotenv";
+config();
+
 async function fetchData() {
   const dataType = "forecast";
   let dataToSend = {};
@@ -25,16 +28,28 @@ async function fetchData() {
 
   // FunctionsのAPIを叩く
   try {
-    const baseUrl = process.env.FUCTIONS_URL;
+    const jwtToken = process.env.JWT_TOKEN;
+    if (!jwtToken) {
+      console.error("JWT_TOKEN is not set");
+      process.exit(1);
+    }
+    const baseUrl = process.env.FUNCTIONS_URL;
+    if (!baseUrl) {
+      console.error("FUCTIONS_URL is not set");
+      process.exit(1);
+    }
     const url = baseUrl + "/forecast";
     const res = await fetch(url, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Auhtorization: `Bearer ${process.env.JWT_TOKEN}`,
+        Auhtorization: `Bearer ${jwtToken}`,
       },
       body: JSON.stringify(dataToSend),
     });
+    if (!res.ok) {
+      throw new Error(`Failed to save data: ${res.statusText}`);
+    }
     console.log("successfully saved to Firestore:", res);
   } catch (error) {
     console.error("Error saving data:", error);
