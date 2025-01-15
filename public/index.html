@@ -132,10 +132,9 @@
 
   <script>
     const region = "asia-northeast1";
-    // const baseUrl = process.env.NODE_ENV === 'production' ?
-    //   process.env.FUNCTION_API_URL :
-    //   `http://127.0.0.1:5001/jwt-test-with-actions/${region}/firestore`;
-    const baseUrl = `http://127.0.0.1:5001/jwt-test-with-actions/${region}/firestore`
+    // NOTE: htmlでは環境変数の取得は無理。本来はtsxで取得すると思うのでここでは直書きで。
+    const baseUrl = "https://firestore-fzxwlwc6iq-an.a.run.app";
+    // const baseUrl = `http://127.0.0.1:5001/jwt-test-with-actions/${region}/firestore`
 
     // get weekly forecast
     document.getElementById('forecast').addEventListener('click', async () => {

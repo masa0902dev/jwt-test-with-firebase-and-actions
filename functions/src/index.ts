@@ -13,8 +13,8 @@ admin.initializeApp({
   credential: admin.credential.cert(serviceAccountKey as admin.ServiceAccount),
 });
 
-const region = "asia-northeast1";
-const baseUrl = "https://firestore-fzxwlwc6iq-an.a.run.app";
+const region = process.env.FUNCTIONS_REGION;
+const baseUrl = process.env.FUNCTIONS_URL;
 // const baseUrl = `http://127.0.0.1:5001/jwt-test-with-actions/${region}/firestore`;
 
 const app = express();
