@@ -22,9 +22,9 @@ app.use(cors({ origin: true }));
 app.use(helmet());
 app.use(express.json());
 
-// NOTE: 10s に 5 リクエストまで。実感できるように短くしている。
+// NOTE: 1h に 5 リクエストまで。実感できるように短くしている。
 const limiter = rateLimit({
-  windowMs: 10 * 1000,
+  windowMs: 60 * 60 * 1000,
   limit: 5,
   message: "Sorry😭 Too many requests, please try again later",
   statusCode: 429,
