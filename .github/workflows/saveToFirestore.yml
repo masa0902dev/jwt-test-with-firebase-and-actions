@@ -42,6 +42,6 @@ jobs:
           npx tsc
 
           # 実行
-          node dist/fetchData.js
+          node dist/for-github-actions/fetchData.js
         env:
           JWT_TOKEN: ${{ env.JWT_TOKEN }}
