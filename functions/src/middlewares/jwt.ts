@@ -1,29 +1,42 @@
-import express from "express";
-import jwt from "jsonwebtoken";
+import { Request, Response, NextFunction } from "express";
+import { OAuth2Client } from "google-auth-library";
 
-const authenticateJWT = (
-  req: express.Request,
-  res: express.Response,
-  next: express.NextFunction
-) => {
-  const authHeader = req.headers.authorization;
-  if (!authHeader) {
-    res.status(403).send("Authorization header missing");
-    return;
-  }
+const client = new OAuth2Client();
 
-  const token = authHeader.split(" ")[1];
-  try {
-    // TODO: jwtをちゃんと書く (SECRET_KEY は環境変数にする)
-    const payload = jwt.verify(token, "SECRET_KEY");
-    if ((payload as any).source !== "github-actions") {
-      throw new Error("Invalid token source");
+const authJwt = (audience: string) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    const authHeader = req.headers.authorization || "";
+    if (!authHeader.startsWith("Bearer ")) {
+      res.status(401).json({ error: "Unauthorized" });
+      return;
     }
-    next();
-  } catch (error) {
-    res.status(403).send("Invalid or missing token");
-    return;
-  }
+
+    const token = authHeader.split(" ")[1];
+    try {
+      const ticket = await client.verifyIdToken({
+        idToken: token,
+        audience: audience, // Audience を動的に指定(audienceは必須)
+      });
+
+      const payload = ticket.getPayload();
+      // NOTE: トークンがActionsのOpenID Connect(OIDC)プロバイダーによって発行されたものであることを保証(issuerがOIDCプロバイダーのURLであることを確認)
+      if (!payload || payload.iss !== "https://token.actions.githubusercontent.com") {
+        throw new Error("Invalid issuer");
+      }
+
+      // // 必要に応じてリポジトリ名などを検証
+      // if (payload.repository !== "your-org/your-repo") {
+      //   throw new Error("Invalid repository");
+      // }
+
+      // // リクエストに認証情報を添付可能
+      // req.body.auth = payload;
+      next();
+    } catch (error) {
+      console.error("JWT validation failed:", error);
+      res.status(403).json({ error: "Forbidden" });
+    }
+  };
 };
 
-export { authenticateJWT };
+export default authJwt;

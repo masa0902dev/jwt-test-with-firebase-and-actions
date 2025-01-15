@@ -113,7 +113,7 @@
       <ol>
         <li>Functions: api GET from, POST to Firestore</li>
         <li>Firestore</li>
-        <li>Hosting: call api GET with rate limit</li>
+        <li>Hosting: call api GET with rate-limit or jwt-auth</li>
       </ol>
       <p>Github Actions</p>
       <ol>
@@ -122,39 +122,71 @@
     </section>
 
     <section>
+      <span style="border: 4px solid orange">
+        <a style="font-size: 1.2rem; padding: 1rem;"
+          href="https://github.com/masa0902dev/jwt-test-with-firebase-and-actions">Github
+          Source</a>
+      </span>
+    </section>
+
+    <section>
       <h1>Test</h1>
-      <p>Click the button to call api GET with rate limit</p>
-      <button id="forecast">forecast</button>
-      <button id="temperature">temperature</button>
-      <div id="response"></div>
+      <p>Click the button to call api GET</p>
+
+      <div style="margin-bottom: .5rem"><button id="forecast">forecast</button> rate-limit: 5 requests per 10s (if
+        rate-limited, status 429)</div>
+      <div style="margin-bottom: .5rem"><button id="temperature">temperature</button> (nothing)</div>
+      <div style="margin-bottom: 1rem"><button id="estimation">estimation</button> jwt-auth: 401 Unauthorized
+      </div>
+
+      <div style="margin-bottom: .5rem">response:<br><code id="response"></code></div>
+
     </section>
   </div>
 
   <script>
-    const baseUrl = 'https://us-central1-jwt-test-3c7b4.cloudfunctions.net/api';
+    const region = "asia-northeast1";
+    // NOTE: htmlでは環境変数の取得は無理。本来はtsxで取得すると思うのでここでは直書きで。
+    const baseUrl = "https://firestore-fzxwlwc6iq-an.a.run.app";
+    // const baseUrl = `http://127.0.0.1:5001/jwt-test-with-actions/${region}/firestore`
 
-    // get weekly forecast
-    document.getElementById('forecast').addEventListener('click', async () => {
-      const response = await fetch(baseUrl + "/forecast", {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json'
+    async function fetchData(url, buttonId) {
+      console.log("clicked:", url)
+      try {
+        const response = await fetch(url, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+        if (!response.ok) {
+          const message = `An error has occured: ${response.status}`;
+          console.error(message);
+          document.getElementById('response').innerText = message;
+          return;
         }
-      });
-      const data = await response.json();
-      document.getElementById('response').innerText = JSON.stringify(data, null, 2);
+        const data = await response.json();
+        console.log("api called successfully:", data);
+        document.getElementById('response').innerText = JSON.stringify(data, null, 4);;
+      } catch (error) {
+        console.error("error:", error);
+        document.getElementById('response').innerText = error;
+      }
+    }
+
+    document.getElementById('forecast').addEventListener('click', () => {
+      const url = baseUrl + "/forecast";
+      fetchData(url, 'forecast');
     });
 
-    // get past temperature
-    document.getElementById('temperature').addEventListener('click', async () => {
-      const response = await fetch(baseUrl + "/temperature", {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-      const data = await response.json();
-      document.getElementById('response').innerText = JSON.stringify(data, null, 2);
+    document.getElementById('temperature').addEventListener('click', () => {
+      const url = baseUrl + "/temperature";
+      fetchData(url, 'temperature');
+    });
+
+    document.getElementById('estimation').addEventListener('click', () => {
+      const url = baseUrl + "/estimation";
+      fetchData(url, 'estimation');
     });
   </script>
 </body>
