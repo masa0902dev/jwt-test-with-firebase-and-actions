@@ -22,10 +22,10 @@ app.use(cors({ origin: true }));
 app.use(helmet());
 app.use(express.json());
 
-// レートリミット: 5min に 300 リクエストまで。動作確認完了
+// NOTE: 10s に 5 リクエストまで。実感できるように短くしている。
 const limiter = rateLimit({
-  windowMs: 5 * 60 * 1000,
-  limit: 300,
+  windowMs: 10 * 1000,
+  limit: 5,
   message: "Sorry😭 Too many requests, please try again later",
   statusCode: 429,
   // NOTE: undefined ip address error: https://express-rate-limit.mintlify.app/reference/error-codes#err-erl-undefined-ip-address
