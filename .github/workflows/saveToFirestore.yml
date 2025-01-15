@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
 
     permissions:
-      id-token: write
+      id-token: write # OIDC トークン発行を許可
       contents: read
 
     steps:
@@ -27,11 +27,12 @@ jobs:
         run: npm install
 
       # JWTトークンを取得
-      - name: Generate JWT Token
+      - name: Generate OIDC Token
         id: get-jwt
         run: |
-          echo "JWT_TOKEN=$(curl -s -H 'Metadata-Flavor: Google' \
-            http://169.254.169.254/computeMetadata/v1/instance/service-accounts/default/identity?audience=https://firestore-fzxwlwc6iq-an.a.run.app/forecast)" \
+          echo "JWT_TOKEN=$(curl -s -H 'Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN' \
+            -H 'Accept: application/json' \
+            https://vstoken.actions.githubusercontent.com/v1/token?audience=https://firestore-fzxwlwc6iq-an.a.run.app/forecast)" \
             >> $GITHUB_ENV
 
       # TypeScript ファイルを実行して外部APIを叩き、Firestore APIに送信
@@ -42,6 +43,5 @@ jobs:
 
           # 実行
           node dist/fetchData.js
-        # NOTE: 環境変数として値をファイルに渡す。
         env:
           JWT_TOKEN: ${{ env.JWT_TOKEN }}
