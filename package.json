@@ -17,6 +17,8 @@
   },
   "homepage": "https://github.com/masa0902dev/jwt-test-with-firebase-and-actions#readme",
   "dependencies": {
+    "@types/dotenv": "^8.2.3",
+    "dotenv": "^16.4.7",
     "firebase": "^11.1.0"
   },
   "devDependencies": {
