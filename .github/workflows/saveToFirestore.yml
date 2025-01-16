@@ -29,12 +29,22 @@ jobs:
       - name: Generate OIDC Token
         id: get-jwt
         run: |
+          echo "Requesting OIDC Token..."
           TOKEN=$(curl -s -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
             -H "Accept: application/json" \
             https://vstoken.actions.githubusercontent.com/v1/token?audience=https://firestore-fzxwlwc6iq-an.a.run.app/forecast)
-          echo "JWT_TOKEN=$(echo $TOKEN | jq -r '.value')" >> $GITHUB_ENV
-        env:
-          ACTIONS_ID_TOKEN_REQUEST_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+          # トークンの取得結果を表示
+          echo "Raw Token Response: $TOKEN"
+
+          # トークンを抽出
+          JWT_TOKEN=$(echo $TOKEN | jq -r '.value')
+
+          # JWT_TOKENの内容を表示
+          echo "Extracted JWT Token: $JWT_TOKEN"
+
+          # 環境変数に設定
+          echo "JWT_TOKEN=$JWT_TOKEN" >> $GITHUB_ENV
 
       # TypeScript ファイルを実行して外部APIを叩き、Firestore APIに送信
       - name: Run TypeScript File
