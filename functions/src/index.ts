@@ -21,6 +21,7 @@ const app = express();
 app.use(cors({ origin: true }));
 app.use(helmet());
 app.use(express.json());
+app.set("trust proxy", 1);
 
 // NOTE: 1h に 5 リクエストまで。実感できるように短くしている。
 const limiter = rateLimit({

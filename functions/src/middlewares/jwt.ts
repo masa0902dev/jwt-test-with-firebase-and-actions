@@ -8,11 +8,20 @@ const authJwt = () => {
   const publicKeyUrl =
     "https://token.actions.githubusercontent.com/.well-known/openid-configuration";
   client.getFederatedSignonCertsAsync = async () => {
-    const response = await fetch(publicKeyUrl);
-    // eslint-disable-next-line
-    const { jwks_uri } = await response.json();
-    const jwksResponse = await fetch(jwks_uri);
-    return await jwksResponse.json();
+    try {
+      const response = await fetch(publicKeyUrl);
+      const publicKeyConfig = await response.json();
+      console.log("Public key configuration response:", publicKeyConfig);
+
+      const jwksResponse = await fetch(publicKeyConfig.jwks_uri);
+      const keys = await jwksResponse.json();
+      console.log("JWKS response:", keys);
+
+      return keys;
+    } catch (error) {
+      console.error("Error fetching public keys:", error);
+      throw new Error("Failed to fetch public keys");
+    }
   };
 
   return async (req: Request, res: Response, next: NextFunction) => {
