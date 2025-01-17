@@ -41,6 +41,15 @@ async function fetchData() {
     }
     console.log("baseUrl:", baseUrl);
     const url = baseUrl + "/forecast";
+
+    const resGET = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    console.log("GET response:", await resGET.json());
+
     const res = await fetch(url, {
       method: "POST",
       headers: {
@@ -50,7 +59,8 @@ async function fetchData() {
       body: JSON.stringify(dataToSend),
     });
     if (!res.ok) {
-      throw new Error(`Failed to save data: ${res.statusText}`);
+      const errRes = await res.text();
+      throw new Error(`Failed to save data:\n${res.statusText},\nDetails: ${errRes}`);
     }
     console.log("successfully saved to Firestore:", await res.json());
   } catch (error) {
