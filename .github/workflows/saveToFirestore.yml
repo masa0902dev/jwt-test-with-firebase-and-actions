@@ -26,26 +26,29 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      # Actions 環境変数の読み込み: 毎回これが必要
+      - name: Load environment variables
+        run: |
+          echo "FUNCTIONS_URL=${{ vars.FUNCTIONS_URL }}" >> $GITHUB_ENV
+
+      # TODO: 今はテストでforecastのみにしている。他のAPIエンドポイントも後から追加する
       - name: Generate OIDC Token
         id: get-jwt
         run: |
           echo "Requesting OIDC Token..."
           jwt_token=$(curl -s -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
             -H "Accept: application/json" \
-            "${ACTIONS_ID_TOKEN_REQUEST_URL}" | jq -r '.value')
+            "https://token.actions.githubusercontent.com/?audience=${{ vars.FUNCTIONS_URL }}/forecast")
 
           echo "JWT_TOKEN=$jwt_token" >> $GITHUB_ENV
 
       - name: Check JWT Token
         run: echo ${{ env.JWT_TOKEN }}
 
-      # TypeScript ファイルを実行して外部APIを叩き、Firestore APIに送信
+      # TypeScript ファイルを実行して外部APIを叩き、Functions APIに送信
       - name: Run TypeScript File
         run: |
-          # TypeScript コンパイル
           npx tsc
-
-          # 実行
           node dist/for-github-actions/fetchData.js
         env:
           JWT_TOKEN: ${{ env.JWT_TOKEN }}
