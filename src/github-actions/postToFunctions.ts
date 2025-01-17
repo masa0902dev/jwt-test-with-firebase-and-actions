@@ -1,19 +1,28 @@
 import { config } from "dotenv";
 import path from "path";
-import { postData as forecast } from "./dataTypes/forecast";
-import { postData as temperature } from "./dataTypes/temperature";
-import { postData as estimation } from "./dataTypes/estimation";
+import postData from "./postData";
+import { fetchForecast, processForecast } from "./dataTypes/forecast";
+import { fetchTemperature, processTemperature } from "./dataTypes/temperature";
+import { fetchEstimation, processEstimation } from "./dataTypes/estimation";
 config();
 
 async function postToFunctions() {
-  const dataTypes = ["forecast", "temperature", "estimation"];
-  const postFuncs = [forecast, temperature, estimation];
+  type FuncsType = {
+    [key: string]: {
+      fetch: () => Promise<{ [key: string]: number }>;
+      process: (data: { [key: string]: number }) => Promise<{ [key: string]: number }>;
+    };
+  };
+  const funcs: FuncsType = {
+    forecast: { fetch: fetchForecast, process: processForecast },
+    temperature: { fetch: fetchTemperature, process: processTemperature },
+    estimation: { fetch: fetchEstimation, process: processEstimation },
+  };
 
   try {
-    for (let i = 0; i < dataTypes.length; i++) {
-      console.log("Posting to Firebase Functions API:", dataTypes[i]);
-      await postFuncs[i](dataTypes[i]);
-      console.log();
+    for (const dataType in funcs) {
+      console.log("--------------------------------\n" + dataType);
+      await postData(dataType, funcs[dataType].fetch, funcs[dataType].process);
     }
   } catch (error) {
     throw new Error("Error Posting Functions API" + error);
