@@ -45,6 +45,8 @@ jobs:
           echo "$oidcToken" | cut -d "." -f 2 | base64 -d 2>/dev/null || base64 --decode
 
           echo "JWT_TOKEN=$oidcToken" >> $GITHUB_ENV
+          echo "$JWT_TOKEN" | cut -d "." -f 2 | base64 -d | jq
+
 
       - name: Run TypeScript
         run: |
