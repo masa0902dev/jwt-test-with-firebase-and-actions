@@ -9,7 +9,7 @@
 
 ## /temperature
 
-- GET: (nothing)
+- GET: rate-limit
 - POST: JWT-auth
 
 ## /estimation
@@ -19,8 +19,9 @@
 
 # data example
 
+body
+
 ```json
-// body
 {
   "dataType": "forecast",
   "data": {

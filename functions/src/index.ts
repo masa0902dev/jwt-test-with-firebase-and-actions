@@ -23,10 +23,10 @@ app.use(helmet());
 app.use(express.json());
 app.set("trust proxy", 1);
 
-// NOTE: 1h に 5 リクエストまで。実感できるように短くしている。
+// NOTE: 1h に 3 リクエストまで。実感できるように短くしている。
 const limiter = rateLimit({
   windowMs: 60 * 60 * 1000,
-  limit: 5,
+  limit: 3,
   message: "Sorry😭 Too many requests, please try again later",
   statusCode: 429,
   // NOTE: undefined ip address error: https://express-rate-limit.mintlify.app/reference/error-codes#err-erl-undefined-ip-address
@@ -41,7 +41,8 @@ import estimationRouter from "./routers/estimation";
 app.get("/forecast", limiter);
 app.post("/forecast", authJwt());
 
-// temperature: GET -> nothing, POST -> JWT
+// temperature: GET -> rate-limit, POST -> JWT
+app.get("/temperature", limiter);
 app.post("/temperature", authJwt());
 
 // estimation: GET -> JWT, POST -> JWT
