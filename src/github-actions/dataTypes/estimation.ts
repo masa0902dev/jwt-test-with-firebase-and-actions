@@ -3,28 +3,41 @@ import path from "path";
 config();
 
 async function fetchData() {
-  const dataType = "forecast";
-  let dataToSend: { [key: string]: number } = {};
-
-  // 外部APIからデータを取得する想定
   try {
     const data = {
-      "1-11": 4.5,
-      "1-12": 4.6,
-      "1-13": 4.7,
-      "1-14": 4.8,
-      "1-15": 4.9,
-      "1-16": 5.0,
-      "1-17": 5.1,
+      "1-12": 5,
+      "1-13": 6,
+      "1-14": 7,
+      "1-15": 8,
+      "1-16": 9,
+      "1-17": 10,
+      "1-18": 11.1,
     };
-    dataToSend = data;
-    console.log("successfully fetched data:", dataToSend);
+    console.log("successfully fetched data:", data);
+    return data;
   } catch (err) {
     console.error("Error fetching data:", err);
     process.exit(1);
   }
+}
 
-  // FunctionsのAPIを叩く
+async function processData(data: {
+  [key: string]: number;
+}): Promise<{ [key: string]: number }> {
+  try {
+    const dataToSend: { [key: string]: number } = data;
+    console.log("successfully processed data:", dataToSend);
+    return dataToSend;
+  } catch (err) {
+    console.error("Error processing data:", err);
+    process.exit(1);
+  }
+}
+
+export async function postData(dataType: string): Promise<void> {
+  const data = await fetchData();
+  const dataToSend = await processData(data);
+
   try {
     const jwtToken = process.env.JWT_TOKEN;
     if (!jwtToken) {
@@ -56,5 +69,3 @@ async function fetchData() {
     process.exit(1);
   }
 }
-
-fetchData();
