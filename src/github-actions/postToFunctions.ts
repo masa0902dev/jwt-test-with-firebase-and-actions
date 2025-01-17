@@ -13,6 +13,7 @@ async function postToFunctions() {
       process: (data: { [key: string]: number }) => Promise<{ [key: string]: number }>;
     };
   };
+  // fetchは叩く外部APIが違う・processはデータが違うので各dataTypeで異なる処理
   const funcs: FuncsType = {
     forecast: { fetch: fetchForecast, process: processForecast },
     temperature: { fetch: fetchTemperature, process: processTemperature },

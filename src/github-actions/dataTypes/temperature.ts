@@ -9,7 +9,7 @@ export async function fetchTemperature() {
       "1-17": 10,
       "1-18": 11.1,
     };
-    console.log("successfully fetched data:", data);
+    console.log("successfully fetched data");
     return data;
   } catch (err) {
     console.error("Error fetching data:", err);
