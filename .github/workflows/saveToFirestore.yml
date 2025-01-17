@@ -52,7 +52,7 @@ jobs:
       - name: Check JWT Token
         run: |
           echo "Decoding JWT Token..."
-          echo ${{ env.JWT_TOKEN }} | base64 -d
+          echo ${{ env.JWT_TOKEN }}
 
       # TypeScript ファイルを実行して外部APIを叩き、Functions APIに送信
       - name: Run TypeScript File
