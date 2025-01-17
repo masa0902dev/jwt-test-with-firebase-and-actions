@@ -36,7 +36,7 @@ async function fetchData() {
     console.log("jwtToken:", jwtToken);
     const baseUrl = process.env.FUNCTIONS_URL;
     if (!baseUrl) {
-      console.error("FUCTIONS_URL is not set");
+      console.error("FUNCTIONS_URL is not set");
       process.exit(1);
     }
     console.log("baseUrl:", baseUrl);
