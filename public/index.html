@@ -133,9 +133,10 @@
       <h1>Test</h1>
       <p>Click the button to call api GET</p>
 
-      <div style="margin-bottom: .5rem"><button id="forecast">forecast</button> rate-limit: 5 requests per 10s (if
+      <div style="margin-bottom: .5rem"><button id="forecast">forecast</button> rate-limit: 3 requests per 1h (if
         rate-limited, status 429)</div>
-      <div style="margin-bottom: .5rem"><button id="temperature">temperature</button> (nothing)</div>
+      <div style="margin-bottom: .5rem"><button id="temperature">temperature</button> rate-limit: 3 requests per 1h (if
+        rate-limited, status 429)</div>
       <div style="margin-bottom: 1rem"><button id="estimation">estimation</button> jwt-auth: 401 Unauthorized
       </div>
 
