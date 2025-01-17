@@ -16,7 +16,9 @@ const authJwt = () => {
       console.log("token:", token);
       const ticket = await client.verifyIdToken({
         idToken: token,
-        audience: "https://github.com/masa0902dev/jwt-test-with-firebase-and-actions",
+        // TODO: .envにする
+        // NOTE: https://github.com/<userId>/<repoName>ではない！<userId>まで。
+        audience: "https://github.com/masa0902dev",
       });
       console.log("ticket:", ticket);
       const payload = ticket.getPayload();
