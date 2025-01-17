@@ -33,11 +33,13 @@ async function fetchData() {
       console.error("JWT_TOKEN is not set");
       process.exit(1);
     }
+    console.log("jwtToken:", jwtToken);
     const baseUrl = process.env.FUNCTIONS_URL;
     if (!baseUrl) {
       console.error("FUCTIONS_URL is not set");
       process.exit(1);
     }
+    console.log("baseUrl:", baseUrl);
     const url = baseUrl + "/forecast";
     const res = await fetch(url, {
       method: "POST",

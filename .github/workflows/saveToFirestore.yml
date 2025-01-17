@@ -46,8 +46,9 @@ jobs:
           echo "oidcToken.outputs: $oidcToken.outputs"
           echo "oidcToken.outputs.token: $oidcToken.outputs.token"
 
+          echo "JWT_TOKEN=$oidcToken" >> $GITHUB_ENV
+
+      - name: Run TypeScript
+        run: |
           npx tsc
           node dist/for-github-actions/fetchData.js
-        env:
-          ACTIONS_ID_TOKEN: ${{ secrets.ACTIONS_ID_TOKEN }}
-          JWT_TOKEN: ${{ secrets.oidcToken.outputs.token }}
