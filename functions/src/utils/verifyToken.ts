@@ -19,7 +19,10 @@ const verifyToken = async (token: string): Promise<string | jwt.JwtPayload> => {
     throw new Error("No matching key found");
   }
 
-  const publicKey = `-----BEGIN RSA PUBLIC KEY-----\n${key.n}\n-----END RSA PUBLIC KEY-----`;
+  // 公開鍵を生成（正しいフォーマットで設定）
+  const publicKey = `-----BEGIN PUBLIC KEY-----\n${Buffer.from(key.n, "base64").toString(
+    "ascii"
+  )}\n-----END PUBLIC KEY-----`;
   console.log("Public key:", publicKey);
 
   // JWTの検証
