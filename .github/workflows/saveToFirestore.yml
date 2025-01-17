@@ -26,38 +26,20 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      # Actions 環境変数の読み込み: 毎回これが必要
-      - name: Load environment variables
+      - name: Show env
+        run: env | grep 'ACTIONS_ID_TOKEN'
+
+      - name: OIDC test
+        run: curl --silent -H "Authorization: bearer ${ACTIONS_ID_TOKEN_REQUEST_TOKEN}" "${ACTIONS_ID_TOKEN_REQUEST_URL}"
+
+      - name: Request OIDC token
         run: |
-          echo "FUNCTIONS_URL=${{ vars.FUNCTIONS_URL }}" >> $GITHUB_ENV
+          # oidc-tokenにOIDCトークンを設定
+          oidc-token=$(curl --silent -H "Authorization: bearer ${ACTIONS_ID_TOKEN_REQUEST_TOKEN}" "${ACTIONS_ID_TOKEN_REQUEST_URL}")
+          echo "oidc-token: $oidc-token"
 
-      # TODO: 今はテストでforecastのみにしている。他のAPIエンドポイントも後から追加する
-      - name: Generate OIDC Token
-        id: get-jwt
-        run: |
-          echo "Requesting OIDC Token..."
-          echo "Token Request: $ACTIONS_ID_TOKEN_REQUEST_TOKEN"
-
-          jwt_token=$(curl -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
-            -H "Accept: application/json" \
-            "${ACTIONS_ID_TOKEN_REQUEST_URL}" | jq -r '.value')
-          echo "JWT Token Response: $jwt_token"
-
-          # curl -v -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
-          #   -H "Accept: application/json" \
-          #   "https://token.actions.githubusercontent.com/?audience=https://accounts.google.com"
-
-          echo "JWT_TOKEN=$jwt_token" >> $GITHUB_ENV
-
-      - name: Check JWT Token
-        run: |
-          echo "Decoding JWT Token..."
-          echo ${{ env.JWT_TOKEN }}
-
-      # TypeScript ファイルを実行して外部APIを叩き、Functions APIに送信
-      - name: Run TypeScript File
-        run: |
           npx tsc
           node dist/for-github-actions/fetchData.js
         env:
-          JWT_TOKEN: ${{ env.JWT_TOKEN }}
+          ACTIONS_ID_TOKEN: ${{ secrets.ACTIONS_ID_TOKEN }}
+          JWT_TOKEN: ${{ secrets.oide-token.outputs.token }}
