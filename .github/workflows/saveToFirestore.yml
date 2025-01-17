@@ -52,3 +52,6 @@ jobs:
         run: |
           npx tsc
           node dist/for-github-actions/fetchData.js
+        # ファイル内で使う環境変数を設定
+        env:
+          FUNCTIONS_URL: ${{ vars.FUNCTIONS_URL }}
