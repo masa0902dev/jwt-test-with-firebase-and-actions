@@ -33,17 +33,14 @@ jobs:
         run: |
           curl --silent \
             -H "Authorization: Bearer ${ACTIONS_ID_TOKEN_REQUEST_TOKEN}" \
-            "https://token.actions.githubusercontent.com/?audience=https://firestore-fzxwlwc6iq-an.a.run.app" | jq -r '.value'
-          curl --silent \
-            -H "Authorization: Bearer ${ACTIONS_ID_TOKEN_REQUEST_TOKEN}" \
-            "https://token.actions.githubusercontent.com/?audience=https://firestore-fzxwlwc6iq-an.a.run.app/forecast" | jq -r '.value'
+            "${ACTIONS_ID_TOKEN_REQUEST_URL}" | jq -r '.value'
 
       - name: Request OIDC token
         run: |
           # oidcTokenにOIDCトークンを設定
           oidcToken=$(curl --silent \
             -H "Authorization: Bearer ${ACTIONS_ID_TOKEN_REQUEST_TOKEN}" \
-            "https://token.actions.githubusercontent.com/?audience=https://firestore-fzxwlwc6iq-an.a.run.app" | jq -r '.value')
+            "${ACTIONS_ID_TOKEN_REQUEST_URL}" | jq -r '.value')
 
           echo "oidcToken: $oidcToken"
           echo "oidcToken.outputs: $oidcToken.outputs"
