@@ -36,12 +36,16 @@ jobs:
         id: get-jwt
         run: |
           echo "Requesting OIDC Token..."
-          echo $ACTIONS_ID_TOKEN_REQUEST_TOKEN
-          jwt_token=$(curl -v -s -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
-            -H "Accept: application/json" \
-            "https://token.actions.githubusercontent.com/?audience=https://accounts.google.com")
-          echo "JWT Token Response: $jwt_token"
+          echo "Token Request: $ACTIONS_ID_TOKEN_REQUEST_TOKEN"
 
+          # jwt_token=$(curl -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
+          #   -H "Accept: application/json" \
+          #   "https://token.actions.githubusercontent.com/?audience=https://accounts.google.com")
+          # echo "JWT Token Response: $jwt_token"
+
+          curl -v -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
+            -H "Accept: application/json" \
+            "https://token.actions.githubusercontent.com/?audience=https://accounts.google.com"
 
           echo "JWT_TOKEN=$jwt_token" >> $GITHUB_ENV
 
