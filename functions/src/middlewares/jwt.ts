@@ -16,10 +16,9 @@ const authJwt = () => {
       const payload = await verifyToken(token);
       console.log("JWT payload:", payload);
 
-      // // 必要に応じて追加の検証を行う
-      // if (payload.repository !== "masa0902dev/jwt-test-with-firebase-and-actions") {
-      //   throw new Error("Invalid repository");
-      // }
+      if (payload.repository !== "masa0902dev/jwt-test-with-firebase-and-actions") {
+        throw new Error("Invalid repository");
+      }
 
       next();
     } catch (error) {
