@@ -30,7 +30,9 @@ jobs:
         run: env | grep 'ACTIONS_ID_TOKEN'
 
       - name: OIDC test
-        run: curl --silent -H "Authorization: bearer ${ACTIONS_ID_TOKEN_REQUEST_TOKEN}" "${ACTIONS_ID_TOKEN_REQUEST_URL}"
+        run: |
+          curl --silent -H "Authorization: Bearer ${ACTIONS_ID_TOKEN_REQUEST_TOKEN}" \
+            "${ACTIONS_ID_TOKEN_REQUEST_URL}"
 
       - name: Request OIDC token
         run: |
