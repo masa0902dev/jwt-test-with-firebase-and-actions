@@ -10,16 +10,11 @@ const authJwt = () => {
     }
 
     const token = authHeader.split(" ")[1];
-    console.log("Received token:", token);
-
     try {
       const payload = await verifyToken(token);
-      console.log("JWT payload:", payload);
-
-      if (payload.repository !== "masa0902dev/jwt-test-with-firebase-and-actions") {
+      if (payload.repository !== process.env.ACTIONS_REPOSITORY) {
         throw new Error("Invalid repository");
       }
-
       next();
     } catch (error) {
       console.error("JWT validation failed:", error);

@@ -4,9 +4,9 @@ config();
 
 async function fetchData() {
   const dataType = "forecast";
-  let dataToSend = {};
+  let dataToSend: { [key: string]: number } = {};
 
-  // 外部APIからデータを取得
+  // 外部APIからデータを取得する想定
   try {
     const data = {
       "1-11": 4.5,
@@ -31,13 +31,11 @@ async function fetchData() {
       console.error("JWT_TOKEN is not set");
       process.exit(1);
     }
-    console.log("jwtToken:", jwtToken);
     const baseUrl = process.env.FUNCTIONS_URL;
     if (!baseUrl) {
       console.error("FUNCTIONS_URL is not set");
       process.exit(1);
     }
-    console.log("baseUrl:", baseUrl);
     const url = path.join(baseUrl, dataType);
 
     const res = await fetch(url, {
