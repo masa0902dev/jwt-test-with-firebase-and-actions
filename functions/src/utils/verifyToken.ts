@@ -1,8 +1,14 @@
 import jwt from "jsonwebtoken";
+import jose from "node-jose";
 
+interface ExtendedJwtPayload extends jwt.JwtPayload {
+  repository: string;
+}
+
+// Githubの公開鍵が置いてあるURL
 const publicKeyUrl = "https://token.actions.githubusercontent.com/.well-known/jwks";
 
-const verifyToken = async (token: string): Promise<string | jwt.JwtPayload> => {
+const verifyToken = async (token: string): Promise<ExtendedJwtPayload> => {
   const response = await fetch(publicKeyUrl);
   const jwks = await response.json();
 
@@ -19,10 +25,9 @@ const verifyToken = async (token: string): Promise<string | jwt.JwtPayload> => {
     throw new Error("No matching key found");
   }
 
-  // 公開鍵を生成（正しいフォーマットで設定）
-  const publicKey = `-----BEGIN PUBLIC KEY-----\n${Buffer.from(key.n, "base64").toString(
-    "ascii"
-  )}\n-----END PUBLIC KEY-----`;
+  // `node-jose`を使用してPEM形式の公開鍵を生成
+  const keyStore = await jose.JWK.asKeyStore({ keys: [key] });
+  const publicKey = keyStore.get(kid).toPEM();
   console.log("Public key:", publicKey);
 
   // JWTの検証
@@ -31,7 +36,7 @@ const verifyToken = async (token: string): Promise<string | jwt.JwtPayload> => {
       algorithms: ["RS256"],
       audience: "https://github.com/masa0902dev",
       issuer: "https://token.actions.githubusercontent.com",
-    });
+    }) as ExtendedJwtPayload;
     console.log("Verified payload:", payload);
     return payload;
   } catch (err) {

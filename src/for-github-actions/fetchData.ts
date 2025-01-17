@@ -1,4 +1,5 @@
 import { config } from "dotenv";
+import path from "path";
 config();
 
 async function fetchData() {
@@ -16,10 +17,7 @@ async function fetchData() {
       "1-16": 5.0,
       "1-17": 5.1,
     };
-    dataToSend = {
-      dataType: dataType,
-      data: data,
-    };
+    dataToSend = data;
     console.log("successfully fetched data:", dataToSend);
   } catch (err) {
     console.error("Error fetching data:", err);
@@ -40,15 +38,7 @@ async function fetchData() {
       process.exit(1);
     }
     console.log("baseUrl:", baseUrl);
-    const url = baseUrl + "/forecast";
-
-    const resGET = await fetch(url, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    console.log("GET response:", await resGET.json());
+    const url = path.join(baseUrl, dataType);
 
     const res = await fetch(url, {
       method: "POST",
