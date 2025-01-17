@@ -14,8 +14,8 @@ module.exports = {
   ],
   parser: "@typescript-eslint/parser",
   parserOptions: {
-    // これによってfunctions内のエラーは治った
-    project: ["./tsconfig.json"],
+    // これによってfunctions内のエラーは治った(プロジェクトルートを使う"tsconfig.json"のようにするとlint実行時にエラー)
+    project: ["./tsconfig.json", "./functions/tsconfig.json"],
     sourceType: "module",
   },
   ignorePatterns: ["/lib/**/*", "/generated/**/*"],
