@@ -37,7 +37,7 @@ jobs:
       - name: Run TypeScript
         run: |
           npx tsc
-          node dist/for-github-actions/postToFunctions.js
+          node dist/github-actions/postToFunctions.js
         # ファイル内で使う環境変数を設定
         env:
           FUNCTIONS_URL: ${{ vars.FUNCTIONS_URL }}
