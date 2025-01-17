@@ -20,6 +20,7 @@ const verifyToken = async (token: string): Promise<string | jwt.JwtPayload> => {
   }
 
   const publicKey = `-----BEGIN RSA PUBLIC KEY-----\n${key.n}\n-----END RSA PUBLIC KEY-----`;
+  console.log("Public key:", publicKey);
 
   // JWTの検証
   try {
