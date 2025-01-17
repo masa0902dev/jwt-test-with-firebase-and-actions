@@ -14,7 +14,7 @@ admin.initializeApp({
 });
 
 const region = process.env.FUNCTIONS_REGION;
-const baseUrl = process.env.FUNCTIONS_URL;
+// const baseUrl = process.env.FUNCTIONS_URL;
 // const baseUrl = `http://127.0.0.1:5001/jwt-test-with-actions/${region}/firestore`;
 
 const app = express();
@@ -38,14 +38,14 @@ import estimationRouter from "./routers/estimation";
 
 // forecast: GET -> rate-limit, POST -> JWT
 app.get("/forecast", limiter);
-app.post("/forecast", authJwt(baseUrl + "/forecast"));
+app.post("/forecast", authJwt());
 
 // temperature: GET -> nothing, POST -> JWT
-app.post("/temperature", authJwt(baseUrl + "/temperature"));
+app.post("/temperature", authJwt());
 
 // estimation: GET -> JWT, POST -> JWT
-app.get("/estimation", authJwt(baseUrl + "/estimation"));
-app.post("/estimation", authJwt(baseUrl + "/estimation"));
+app.get("/estimation", authJwt());
+app.post("/estimation", authJwt());
 
 app.use("/forecast", forecastRouter);
 app.use("/temperature", temperatureRouter);

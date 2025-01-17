@@ -3,7 +3,7 @@ import { OAuth2Client } from "google-auth-library";
 
 const client = new OAuth2Client();
 
-const authJwt = (audience: string) => {
+const authJwt = () => {
   return async (req: Request, res: Response, next: NextFunction) => {
     const authHeader = req.headers.authorization || "";
     if (!authHeader.startsWith("Bearer ")) {
@@ -15,9 +15,10 @@ const authJwt = (audience: string) => {
     try {
       const ticket = await client.verifyIdToken({
         idToken: token,
-        audience: audience, // Audience を動的に指定(audienceは必須)
+        // audience: audience, // Audience を動的に指定(audienceは必須)
+        // audienceはactionsの実行レポジトリっぽい。
+        audience: "https://github.com/masa0902dev/jwt-test-with-firebase-and-actions",
       });
-
       const payload = ticket.getPayload();
       // NOTE: トークンがActionsのOpenID Connect(OIDC)プロバイダーによって発行されたものであることを保証(issuerがOIDCプロバイダーのURLであることを確認)
       if (!payload || payload.iss !== "https://token.actions.githubusercontent.com") {
