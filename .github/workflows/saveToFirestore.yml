@@ -40,9 +40,13 @@ jobs:
           oidcToken=$(curl --silent \
             -H "Authorization: Bearer ${ACTIONS_ID_TOKEN_REQUEST_TOKEN}" \
             "${ACTIONS_ID_TOKEN_REQUEST_URL}" | jq -r '.value')
+
+          # トークンのデバッグ出力
           echo "OIDC Token (Full): $oidcToken"
+          echo "OIDC Token Header:"
+          echo "$oidcToken" | cut -d "." -f 1 | base64 -d 2>/dev/null || base64 --decode | jq
           echo "OIDC Token Payload:"
-          echo "$oidcToken" | cut -d "." -f 2 | base64 -d 2>/dev/null || base64 --decode
+          echo "$oidcToken" | cut -d "." -f 2 | base64 -d 2>/dev/null || base64 --decode | jq
 
           echo "JWT_TOKEN=$oidcToken" >> $GITHUB_ENV
 
