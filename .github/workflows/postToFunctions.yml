@@ -33,8 +33,6 @@ jobs:
             "${ACTIONS_ID_TOKEN_REQUEST_URL}" | jq -r '.value')
 
           echo "JWT_TOKEN=$oidcToken" >> $GITHUB_ENV
-          echo "$JWT_TOKEN" | cut -d "." -f 2 | base64 -d | jq
-
 
       - name: Run TypeScript
         run: |
