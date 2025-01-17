@@ -13,13 +13,15 @@ const authJwt = () => {
 
     const token = authHeader.split(" ")[1];
     try {
+      console.log("token:", token);
       const ticket = await client.verifyIdToken({
         idToken: token,
-        // audience: audience, // Audience を動的に指定(audienceは必須)
-        // audienceはactionsの実行レポジトリっぽい。
         audience: "https://github.com/masa0902dev/jwt-test-with-firebase-and-actions",
       });
+      console.log("ticket:", ticket);
       const payload = ticket.getPayload();
+      console.log("payload:", payload);
+      console.log("payload.iss:", payload?.iss);
       // NOTE: トークンがActionsのOpenID Connect(OIDC)プロバイダーによって発行されたものであることを保証(issuerがOIDCプロバイダーのURLであることを確認)
       if (!payload || payload.iss !== "https://token.actions.githubusercontent.com") {
         throw new Error("Invalid issuer");
