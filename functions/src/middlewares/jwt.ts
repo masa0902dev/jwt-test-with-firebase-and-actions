@@ -4,6 +4,17 @@ import { OAuth2Client } from "google-auth-library";
 const client = new OAuth2Client();
 
 const authJwt = () => {
+  // GitHub Actionsの公開鍵を取得する設定
+  const publicKeyUrl =
+    "https://token.actions.githubusercontent.com/.well-known/openid-configuration";
+  client.getFederatedSignonCertsAsync = async () => {
+    const response = await fetch(publicKeyUrl);
+    // eslint-disable-next-line
+    const { jwks_uri } = await response.json();
+    const jwksResponse = await fetch(jwks_uri);
+    return await jwksResponse.json();
+  };
+
   return async (req: Request, res: Response, next: NextFunction) => {
     const authHeader = req.headers.authorization || "";
     if (!authHeader.startsWith("Bearer ")) {
@@ -13,29 +24,22 @@ const authJwt = () => {
 
     const token = authHeader.split(" ")[1];
     try {
-      console.log("token:", token);
       const ticket = await client.verifyIdToken({
         idToken: token,
-        // TODO: .envにする
-        // NOTE: https://github.com/<userId>/<repoName>ではない！<userId>まで。
-        audience: "https://github.com/masa0902dev",
+        audience: "https://github.com/masa0902dev", // 環境変数化も検討
       });
-      console.log("ticket:", ticket);
       const payload = ticket.getPayload();
-      console.log("payload:", payload);
-      console.log("payload.iss:", payload?.iss);
-      // NOTE: トークンがActionsのOpenID Connect(OIDC)プロバイダーによって発行されたものであることを保証(issuerがOIDCプロバイダーのURLであることを確認)
+
+      console.log("JWT payload:", payload);
+
       if (!payload || payload.iss !== "https://token.actions.githubusercontent.com") {
         throw new Error("Invalid issuer");
       }
 
-      // // 必要に応じてリポジトリ名などを検証
-      // if (payload.repository !== "your-org/your-repo") {
+      // if (payload.repository !== "masa0902dev/jwt-test-with-firebase-and-actions") {
       //   throw new Error("Invalid repository");
       // }
 
-      // // リクエストに認証情報を添付可能
-      // req.body.auth = payload;
       next();
     } catch (error) {
       console.error("JWT validation failed:", error);
