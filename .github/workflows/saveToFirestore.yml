@@ -39,7 +39,7 @@ jobs:
           echo $ACTIONS_ID_TOKEN_REQUEST_TOKEN
           jwt_token=$(curl -v -s -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
             -H "Accept: application/json" \
-            "https://token.actions.githubusercontent.com/?audience=${{ vars.FUNCTIONS_URL }}")
+            "https://token.actions.githubusercontent.com/?audience=https://accounts.google.com")
           echo "JWT Token Response: $jwt_token"
 
 
