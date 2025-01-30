@@ -17,7 +17,7 @@ export async function fetchForecast() {
   }
 }
 
-export async function processForecast(data: {
+export async function parseForecast(data: {
   [key: string]: number;
 }): Promise<{ [key: string]: number }> {
   try {

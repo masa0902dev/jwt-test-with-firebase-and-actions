@@ -17,7 +17,7 @@ export async function fetchTemperature() {
   }
 }
 
-export async function processTemperature(data: {
+export async function parseTemperature(data: {
   [key: string]: number;
 }): Promise<{ [key: string]: number }> {
   try {
