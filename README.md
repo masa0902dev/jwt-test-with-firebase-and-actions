@@ -1,37 +1,13 @@
-# jwt-test
+# Jwt Auth with Firebase Functions and Github Actions
 
-## 動作フロー
+## 解説記事 (Notion):
 
-1. Actions
-    1. OIDCトークンを取得（JWTなので<header>.<payload>.<signature>の形式）
-    2. jsファイルにトークンを渡す
-    3. jsファイル内でAuthorizationヘッダにBearerでつけて、 Functions上のAPIを叩く
-2. firebase Functions
-    1. Github OIDC用の公開鍵のデータを返すAPIにアクセスして、公開鍵として使用するデータ（複数ある）を取得
-    2. 上記で取得したデータのうち、Actionsからのリクエストのkidと同じkidを持つデータを選択
-    3. そのデータを元にPEM形式の公開鍵を生成
-    4. Actionsからのトークン・上記の公開鍵を用いてJWTを検証
-    5. 検証に成功すれば、JWTのpayloadを取得する
-    6. (ついでに、実行元が指定されたユーザor組織かつレポジトリであることを検証)
-    7. API EPの処理を実行
+[[2025 年] Github Actions から Cloud Functions for firebase 上の API を JWT 認証付きで叩く](https://masa0902dev.notion.site/2025-Github-Actions-Cloud-Functions-for-firebase-API-JWT-18ba46af991b8000837dd8965fd177fa)
 
-## JWS (JWTを使った認証) で設定する値
+## これで何ができる？
 
-- aud (audience) には`https://github.com/<userId>`を指定する。audはJWTの受信者である。受信者はFuctionsのAPIかのような気もするが、github actionsでOIDCによってJWTトークンを受け取っているので、受信者はgithub側である。
-    - 実際にactions上でJWTの値を見てみよう（Productionではログはセキュリティ上の理由で消す）。
-    
-    ```yaml
-    # トークンのデバッグ出力
-    echo "OIDC Token (Full): $oidcToken"
-    echo ""
-    echo "OIDC Token Header:"
-    echo "$oidcToken" | cut -d "." -f 1 | base64 -d 2>/dev/null || base64 --decode | jq
-    echo ""
-    echo "OIDC Token Payload:"
-    echo "$oidcToken" | cut -d "." -f 2 | base64 -d 2>/dev/null || base64 --decode | jq
-    ```
-    
-- iss (issuer) には`[https://token.actions.githubusercontent.com](https://token.actions.githubusercontent.com/)`を指定する。今回は、JWTトークンを発行しているのはgithubであり、そのgithubが提示しているUrlがこれ。
-    - https://docs.github.com/en/actions/security-for-github-actions/security-hardening-your-deployments/about-security-hardening-with-openid-connect
-- kid (key ID) : JWT headerにあり、鍵の識別に使用する。
-- alg (algorithm) は RS256 を指定する。
+- Cloud Functions for firebase 上に構築した API を、JWT 認証を用いて、(定刻実行の)Github Actions からのみ叩けるようにする（Functions の API は Firestore の操作を行う）。API への認証されていないリクエストは全て`401 Unauthorized`または`403 Forbidden`を返す。
+
+- JWT 認証用のミドルウェアを作成し、特定のエンドポイントのみに JWT 認証を付与できる。例えば`POST /api/aaa`のみ JWT 認証を必須にして`GET /api/aaa`は認証なしにできる。
+
+- Actions ではなく手動で Firestore を操作したい時は、firebase-admin を用いてローカルから実行できる（ちょっとだけの操作なら firebase console からでも可能）。
